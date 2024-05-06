@@ -1,0 +1,42 @@
+services:
+  
+  #Banco de dados
+  postgre:
+    image: postgres:12.17
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: vendas123
+      POSTGRES_USER: uservendas
+      POSTGRES_DB: vendas
+    volumes:
+      - postgre_docker_vol:/var/lib/postgresql/data
+    networks:
+      - vendas
+
+  #aplicação
+  vendas:
+    
+    ports: 
+      - 8080:8080
+    networks:
+      - aula_teste
+    #informa que esse container só pode ser subir após o postgre
+    dependes_on:
+      postgre
+    environment:
+      DB_PASSWORD: vendas123
+      DB_USER: uservendas
+      DB_DATABASE: vendas
+      DB_HOST: postgre
+    dependes_on:
+      - postgres
+volumes:
+  postgre_docker_vol:
+    name: postgre_vol
+
+networks:
+  vendas:
+    name: vendas
+    driver: bridge
+```
